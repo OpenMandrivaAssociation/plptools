@@ -1,4 +1,4 @@
-%define version 0.15
+%define version 0.17
 %define rel 1
 %define release %mkrel %rel
 
@@ -17,7 +17,7 @@ Name: plptools
 Version: %{version}
 Release: %{release}
 URL: http://plptools.sourceforge.net/
-Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.bz2
+Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.gz
 License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
@@ -150,7 +150,6 @@ mkdir -p $RPM_BUILD_ROOT/%{_prefix} $RPM_BUILD_ROOT%{_initrddir}
 %makeinstall_std
 install -m 644 conf/kiodoc-update.pl \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/kiodoc-update.pl
-install -m755 etc/psion $RPM_BUILD_ROOT%{_initrddir}/psion
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 cat>$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/psion<<EOF
 START_NCPD=yes
@@ -245,14 +244,13 @@ fi
 %{_bindir}/sisinstall
 %{_sbindir}/*
 %{_mandir}/*/*
-#%{_datadir}/locale/*/LC_MESSAGES/plptools.mo
 %{_datadir}/%{name}/*
 %config(noreplace) %{_initrddir}/psion
 %config(noreplace) %{_sysconfdir}/sysconfig/psion
 
 %files -n %{libname}
 %defattr(-,root,root)
-%{_libdir}/libplp.so.*
+%{_libdir}/libplp.so.%{libmajor}*
 
 %files -n %{libname}-devel
 %defattr(-,root,root)
@@ -289,7 +287,6 @@ fi
 %{_bindir}/kpsion
 %{_libdir}/libkpsion.so
 %{_libdir}/libkpsion.la
-#%{_menudir}/kpsion
 %exclude %{_libdir}/libkpsion.a
 %{_datadir}/applnk/*/kpsion*
 %{_datadir}/apps/kpsion/*
@@ -303,7 +300,6 @@ fi
 %{_bindir}/klipsi
 %{_libdir}/klipsi.so*
 %{_libdir}/klipsi.la
-#%{_menudir}/klipsi
 %exclude %{_libdir}/klipsi.a
 %{_datadir}/applnk/*/klipsi*
 %{_datadir}/apps/klipsi/*
