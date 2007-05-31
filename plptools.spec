@@ -18,9 +18,9 @@ Version: %{version}
 Release: %{release}
 URL: http://plptools.sourceforge.net/
 Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.gz
+Patch: plptools-0.17-lib64.patch
 License: GPL
 Group: Communications
-Buildrequires: kdelibs-common
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
 Requires: chkconfig >= 0.9
 PreReq:	rpm-helper
@@ -140,6 +140,7 @@ zwischen Psion und Rechner.
 
 %prep
 %setup -q
+%patch -p1 -b .lib64
 
 %build
 %configure2_5x --enable-kde --with-initdir=%{_initrddir} %{_with_debug} --disable-rpath
