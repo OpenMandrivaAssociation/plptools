@@ -20,6 +20,7 @@ URL: http://plptools.sourceforge.net/
 Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.gz
 License: GPL
 Group: Communications
+Buildrequires: kdelibs-common
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
 Requires: chkconfig >= 0.9
 PreReq:	rpm-helper
