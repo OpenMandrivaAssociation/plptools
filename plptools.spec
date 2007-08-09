@@ -165,16 +165,6 @@ EOF
 #fix paths in libtool files:
 find %{buildroot}/%{_libdir} -name '*.la' -exec perl -pi -e "s|-L${RPM_BUILD_DIR}\S*||g" {} \;
 
-#menus
-mkdir -p %{buildroot}/%{_menudir}
-for i in kpsion klipsi
-do
-	kdedesktop2mdkmenu.pl %{name}-kde Office/PDA %{buildroot}/%{_datadir}/applnk/Utilities/$i.desktop %{buildroot}/%{_menudir}/$i
-	cat %{buildroot}/%{_menudir}/$i >> %{buildroot}/%{_menudir}/%{name}-kde
-	rm -f %{buildroot}/%{_menudir}/$i
-	echo "" >> %{buildroot}/%{_menudir}/%{name}-kde
-done
-
 #icons
 pushd %{buildroot}/%{_iconsdir}
 mkdir {large,mini}
@@ -273,7 +263,6 @@ fi
 %{_libdir}/kde*/kio_plp.la
 %{_libdir}/kde*/libplpprops.so
 %{_libdir}/kde*/libplpprops.la
-%{_menudir}/%{name}-kde
 %{_iconsdir}/*.png
 %{_miconsdir}/*.png
 %{_liconsdir}/*.png
