@@ -1,5 +1,5 @@
-%define version 0.17
-%define rel 2
+%define version 0.18
+%define rel 1
 %define release %mkrel %rel
 
 %define libmajor 0
@@ -216,6 +216,7 @@ cat>>$KONQRC<<EOF
 askSaveinode/x-psion-drive=No
 EOF
 fi
+%update_icon_cache hicolor
 
 %preun
 %_preun_service psion
@@ -237,6 +238,7 @@ fi
 %postun kde
 /sbin/ldconfig
 %{clean_menus}
+%update_icon_cache hicolor
 
 %files -f %{name}.lang
 %defattr(-,root,root)
