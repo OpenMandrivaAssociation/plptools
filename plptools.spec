@@ -18,7 +18,8 @@ Version: %{version}
 Release: %{release}
 URL: http://plptools.sourceforge.net/
 Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.gz
-Patch: plptools-0.17-lib64.patch
+Patch0: plptools-0.17-lib64.patch
+Patch1: plptools-0.18-init_lsb.patch
 License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
@@ -140,16 +141,17 @@ zwischen Psion und Rechner.
 
 %prep
 %setup -q
-%patch -p1 -b .lib64
+%patch0 -p1 -b .lib64
+%patch1 -p1 -b .init_lsb
 
 %build
 %configure2_5x --enable-kde --with-initdir=%{_initrddir} %{_with_debug} --disable-rpath
-%make
+%make kdemoduledir=%_libdir/kde3
 
 %install
 rm -Rf %{buildroot}
 mkdir -p $RPM_BUILD_ROOT/%{_prefix} $RPM_BUILD_ROOT%{_initrddir}
-%makeinstall_std
+%makeinstall_std kdemoduledir=%_libdir/kde3
 install -m 644 conf/kiodoc-update.pl \
 	$RPM_BUILD_ROOT%{_datadir}/%{name}/kiodoc-update.pl
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
