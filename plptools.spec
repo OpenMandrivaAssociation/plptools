@@ -24,7 +24,7 @@ License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
 Requires: chkconfig >= 0.9
-PreReq:	rpm-helper
+Requires(post,preun):	rpm-helper
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
