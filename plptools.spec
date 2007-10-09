@@ -114,7 +114,7 @@ Psion-Dateiattribute und stellt Informationen zum Gerät sowie seiner
 Laufwerke zur Verfügung.
 
 %package -n kpsion
-Summary: Psion utility for KDE.
+Summary: Psion utility for KDE
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
 
@@ -127,7 +127,7 @@ Dieses Packet enthält ein KDE Werkzeug zum Backup, Restore und Formatieren
 von Psion Laufwerken.
 
 %package -n klipsi
-Summary: Psion remote clipboard utility for KDE.
+Summary: Psion remote clipboard utility for KDE
 Group: User Interface/Desktops
 Requires: %{name} = %{version}
 
