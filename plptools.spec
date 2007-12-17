@@ -25,7 +25,6 @@ Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
 Requires: chkconfig >= 0.9
 Requires(post,preun):	rpm-helper
-BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
 This package contains the programs (client and server), necessary to
