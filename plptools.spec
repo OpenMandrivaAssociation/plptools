@@ -1,4 +1,4 @@
-%define version 0.18
+%define version 0.20
 %define rel 1
 %define release %mkrel %rel
 
@@ -23,6 +23,7 @@ Patch1: plptools-0.18-init_lsb.patch
 License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
+BuildRequires: fuse-devel
 Requires: chkconfig >= 0.9
 Requires(post,preun):	rpm-helper
 BuildRoot: %{_tmppath}/%{name}-buildroot
@@ -90,70 +91,20 @@ Requires: %{libname}-devel = %{version}-%{release}
 This package contains the static library for building programs which can 
 communicate with a Psion palmtop.
 
-%package kde
-Summary: Psion support for KDE
-Group: Graphical desktop/KDE
-License: GPL
-Requires: %{name} = %{version}
-Provides: kpsion = %{version}-%{release} klipsi = %{version}-%{release}
-Obsoletes: kpsion klipsi
-
-%description kde
-This package provides support for a new protocol prefix "psion:/" for
-KDE. Any KDE application which uses KDE-conforming URLs, can access
-files on the Psion. Furthermore, a plugin for Konqueror's file-properties
-dialog provides access to Psions proprietary file attributes and information
-about the Psion's drives as well as generic machine information.
-
-%description -l de kde
-Dieses Packet stellt Unterstützung für eine neues Protokoll-Präfix "psion:/"
-für KDE bereit. Jede KDE Anwendung, die KDE-konforme URLs benutzt, kann
-damit auf die Dateien eines Psion zugreifen. Weiterhin, liefert ein Plugin
-für Konqueror's Datei-Eigenschaften-Dialog Informationen über proprietäre
-Psion-Dateiattribute und stellt Informationen zum Gerät sowie seiner
-Laufwerke zur Verfügung.
-
-%package -n kpsion
-Summary: Psion utility for KDE
-Group: User Interface/Desktops
-Requires: %{name} = %{version}
-
-%description -n kpsion
-This package contains a KDE utility program for backup, restore and formatting
-Psion drives.
-
-%description -l de -n kpsion
-Dieses Packet enthält ein KDE Werkzeug zum Backup, Restore und Formatieren
-von Psion Laufwerken.
-
-%package -n klipsi
-Summary: Psion remote clipboard utility for KDE
-Group: User Interface/Desktops
-Requires: %{name} = %{version}
-
-%description -n klipsi
-This package contains a KDE utility for using the Psion's remote clipboard
-function.
-
-%description -l de -n klipsi
-Dieses Packet enthält ein KDE Werkzeug zum Transfer der Zwischenablage
-zwischen Psion und Rechner.
-
 %prep
 %setup -q
-%patch0 -p1 -b .lib64
+#patch0 -p1 -b .lib64
 %patch1 -p1 -b .init_lsb
 
 %build
-%configure2_5x --enable-kde --with-initdir=%{_initrddir} %{_with_debug} --disable-rpath
-%make kdemoduledir=%_libdir/kde3
+export CPPFLAGS="-D_FILE_OFFSET_BITS=64"
+%configure2_5x --with-initdir=%{_initrddir} %{_with_debug} --disable-rpath
+%make
 
 %install
 rm -Rf %{buildroot}
 mkdir -p $RPM_BUILD_ROOT/%{_prefix} $RPM_BUILD_ROOT%{_initrddir}
-%makeinstall_std kdemoduledir=%_libdir/kde3
-install -m 644 conf/kiodoc-update.pl \
-	$RPM_BUILD_ROOT%{_datadir}/%{name}/kiodoc-update.pl
+%makeinstall_std
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
 cat>$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/psion<<EOF
 START_NCPD=yes
@@ -164,23 +115,7 @@ START_PLPPRINTD=yes
 PLPPRINTD_ARGS=
 EOF
 
-#fix paths in libtool files:
-find %{buildroot}/%{_libdir} -name '*.la' -exec perl -pi -e "s|-L${RPM_BUILD_DIR}\S*||g" {} \;
-
-#icons
-pushd %{buildroot}/%{_iconsdir}
-mkdir {large,mini}
-for i in psion_desktop.png klipsi.png
-do
-	ln -s hicolor/32x32/apps/$i ; ln -s ../hicolor/32x32/apps/$i large/; ln -s ../hicolor/16x16/apps/$i mini/
-done
-popd
-
-%find_lang %{name}
-%find_lang kpsion
-%find_lang klipsi
-%find_lang libplpprops
-cat kpsion.lang klipsi.lang libplpprops.lang > plptools-kde.lang
+%{find_lang} %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -191,53 +126,15 @@ test ! -d /mnt/psion && mkdir -p /mnt/psion
 
 %post -n %{libname} -p /sbin/ldconfig
 
-%post kde
-%{update_menus}
-/sbin/ldconfig
-KONQRC=`%{_bindir}/kde-config --expandvars --install config`/konquerorrc
-if test -f $KONQRC && grep -q '\[Notification Messages\]' $KONQRC ; then
-	cp $KONQRC $KONQRC.$$
-	cat $KONQRC.$$ | grep -v "askSaveinode/x-psion-drive=No" | sed \
-		-e '/\[Notification Messages\]/a' \
-		-e 'askSaveinode/x-psion-drive=No' > $KONQRC && \
-	rm -f $KONQRC.$$
-else
-cat>>$KONQRC<<EOF
-
-[Notification Messages]
-askSaveinode/x-psion-drive=No
-EOF
-fi
-%update_icon_cache hicolor
-
 %preun
 %_preun_service psion
 
-%preun kde
-if [ "$1" = 0 ]
-then
-	/usr/bin/perl %{_datadir}/%{name}/kiodoc-update.pl -r psion
-	KONQRC=`kde-config --expandvars --install config`/konquerorrc
-	if test -f $KONQRC ; then
-		cp $KONQRC $KONQRC.$$
-		grep -v 'askSaveinode/x-psion-drive=' $KONQRC.$$ > $KONQRC && \
-		rm -f $KONQRC.$$
-	fi
-fi
-
 %postun -n %{libname} -p /sbin/ldconfig
-
-%postun kde
-/sbin/ldconfig
-%{clean_menus}
-%update_icon_cache hicolor
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc COPYING INSTALL CHANGES ChangeLog README TODO etc/*magic patches
-%{_bindir}/plpftp
-%{_bindir}/plpbackup
-%{_bindir}/sisinstall
+%doc COPYING INSTALL ChangeLog README TODO etc/*magic 
+%{_bindir}/*
 %{_sbindir}/*
 %{_mandir}/*/*
 %{_datadir}/%{name}/*
@@ -258,46 +155,4 @@ fi
 %files -n %{libname}-static-devel
 %defattr(-,root,root)
 %{_libdir}/libplp.a
-
-%files kde -f plptools-kde.lang
-%defattr(-,root,root)
-%{_libdir}/kde*/kio_plp.so*
-%{_libdir}/kde*/kio_plp.la
-%{_libdir}/kde*/libplpprops.so
-%{_libdir}/kde*/libplpprops.la
-%{_iconsdir}/*.png
-%{_miconsdir}/*.png
-%{_liconsdir}/*.png
-%{_datadir}/services/*
-%{_datadir}/icons/*/*/mimetypes/*
-%{_datadir}/icons/*/*/devices/*
-%{_datadir}/icons/*/*/apps/psion*
-%{_datadir}/mimelnk/*/*
-%{_datadir}/doc/HTML/*/kioslave/*
-%{_datadir}/%{name}/kiodoc-update.pl
-%exclude %{_libdir}/kde*/*.a
-
-#%files -n kpsion -f kpsion.lang
-#%defattr(-,root,root)
-%{_bindir}/kpsion
-%{_libdir}/libkpsion.so
-%{_libdir}/libkpsion.la
-%exclude %{_libdir}/libkpsion.a
-%{_datadir}/applnk/*/kpsion*
-%{_datadir}/apps/kpsion/*
-%{_datadir}/apps/konqueror/*
-%{_datadir}/icons/*/*/apps/kpsion*
-%{_datadir}/icons/*/*/actions/psion*
-%{_datadir}/doc/HTML/*/kpsion
-
-#%files -n klipsi -f klipsi.lang
-#%defattr(-,root,root)
-%{_bindir}/klipsi
-%{_libdir}/klipsi.so*
-%{_libdir}/klipsi.la
-%exclude %{_libdir}/klipsi.a
-%{_datadir}/applnk/*/klipsi*
-%{_datadir}/apps/klipsi/*
-%{_datadir}/icons/*/*/apps/klipsi*
-%{_datadir}/icons/*/*/actions/klipsi*
 
