@@ -124,12 +124,16 @@ rm -rf $RPM_BUILD_ROOT
 test ! -d /mnt/psion && mkdir -p /mnt/psion
 %_post_service psion
 
+%if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
+%endif
 
 %preun
 %_preun_service psion
 
+%if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
+%endif
 
 %files -f %{name}.lang
 %defattr(-,root,root)
