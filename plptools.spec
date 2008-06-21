@@ -1,4 +1,4 @@
-%define version 0.20
+%define version 1.0.4
 %define rel 1
 %define release %mkrel %rel
 
@@ -17,9 +17,10 @@ Name: plptools
 Version: %{version}
 Release: %{release}
 URL: http://plptools.sourceforge.net/
-Source: http://download.sourceforge.net/plptools/plptools-%{version}.tar.gz
+Source: http://prdownloads.sourceforge.net/plptools/plptools-%{version}.tar.gz
 Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
+Patch2: plptools-1.0.4-add-std-includes.patch
 License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
@@ -95,6 +96,7 @@ communicate with a Psion palmtop.
 %setup -q
 #patch0 -p1 -b .lib64
 %patch1 -p1 -b .init_lsb
+%patch2 -p1
 
 %build
 export CPPFLAGS="-D_FILE_OFFSET_BITS=64"
@@ -106,10 +108,10 @@ rm -Rf %{buildroot}
 mkdir -p $RPM_BUILD_ROOT/%{_prefix} $RPM_BUILD_ROOT%{_initrddir}
 %makeinstall_std
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-cat>$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/psion<<EOF
+cat>$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/plptools<<EOF
 START_NCPD=yes
-NCPD_ARGS=
-START_PLPNFSD=no
+PLPFUSE_ARGS=
+START_PLPFUSE=yes
 PLPNFSD_ARGS=
 START_PLPPRINTD=yes
 PLPPRINTD_ARGS=
@@ -122,14 +124,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 test ! -d /mnt/psion && mkdir -p /mnt/psion
-%_post_service psion
+%_post_service %{name}
 
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
 %endif
 
 %preun
-%_preun_service psion
+%_preun_service %{name}
 
 %if %mdkversion < 200900
 %postun -n %{libname} -p /sbin/ldconfig
@@ -137,13 +139,14 @@ test ! -d /mnt/psion && mkdir -p /mnt/psion
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc COPYING INSTALL ChangeLog README TODO etc/*magic 
+%doc COPYING INSTALL ChangeLog README TODO etc/*magic
+%doc etc/udev-usbserial-plptools.rules
 %{_bindir}/*
 %{_sbindir}/*
 %{_mandir}/*/*
 %{_datadir}/%{name}/*
-%config(noreplace) %{_initrddir}/psion
-%config(noreplace) %{_sysconfdir}/sysconfig/psion
+%config(noreplace) %{_initrddir}/%{name}
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %files -n %{libname}
 %defattr(-,root,root)
@@ -151,7 +154,7 @@ test ! -d /mnt/psion && mkdir -p /mnt/psion
 
 %files -n %{libname}-devel
 %defattr(-,root,root)
-%doc doc/api etc/*.spec
+%doc doc/api
 %{_libdir}/libplp.so
 %{_libdir}/libplp.la
 %{_includedir}/%{name}/*
