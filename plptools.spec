@@ -1,4 +1,4 @@
-%define version 1.0.4
+%define version 1.0.5
 %define rel 1
 %define release %mkrel %rel
 
@@ -20,7 +20,6 @@ URL: http://plptools.sourceforge.net/
 Source: http://downloads.sourceforge.net/plptools/plptools-%{version}.tar.gz
 Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
-Patch2: plptools-1.0.4-add-std-includes.patch
 License: GPL
 Group: Communications
 Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
@@ -96,7 +95,6 @@ communicate with a Psion palmtop.
 %setup -q
 #patch0 -p1 -b .lib64
 %patch1 -p1 -b .init_lsb
-%patch2 -p1
 
 %build
 export CPPFLAGS="-D_FILE_OFFSET_BITS=64"
