@@ -17,7 +17,7 @@ Name: plptools
 Version: %{version}
 Release: %{release}
 URL: http://plptools.sourceforge.net/
-Source: http://prdownloads.sourceforge.net/plptools/plptools-%{version}.tar.gz
+Source: http://downloads.sourceforge.net/plptools/plptools-%{version}.tar.gz
 Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
 Patch2: plptools-1.0.4-add-std-includes.patch
