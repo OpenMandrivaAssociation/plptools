@@ -1,4 +1,4 @@
-%define version 1.0.7
+%define version 1.0.8
 %define rel 1
 %define release %mkrel %rel
 
