@@ -1,5 +1,5 @@
 %define version 1.0.8
-%define rel 1
+%define rel 2
 %define release %mkrel %rel
 
 %define libmajor 0
