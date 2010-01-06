@@ -1,5 +1,5 @@
-%define version 1.0.8
-%define rel 2
+%define version 1.0.9
+%define rel 1
 %define release %mkrel %rel
 
 %define libmajor 0
@@ -22,7 +22,7 @@ Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
 License: GPL
 Group: Communications
-Buildrequires: readline-devel newt-devel termcap-devel kdelibs-devel >= 2.1
+Buildrequires: readline-devel newt-devel termcap-devel
 BuildRequires: fuse-devel
 Requires: chkconfig >= 0.9
 Requires(post,preun):	rpm-helper
