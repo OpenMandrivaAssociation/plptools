@@ -1,0 +1,11 @@
+--- plptools-0.17/configure.orig	2007-05-31 17:47:26.000000000 -0300
++++ plptools-0.17/configure	2007-05-31 17:48:33.000000000 -0300
+@@ -31542,7 +31542,7 @@
+    { (exit 1); exit 1; }; }
+ fi
+ 
+-kde_libdirs="$kde_prefix/lib /opt/kde2/lib /usr/kde2/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /opt/kde/lib /usr/X11R6/kde/lib"
++kde_libdirs="$kde_prefix/lib /opt/kde2/lib /usr/kde2/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/X11R6/lib /opt/kde/lib /usr/X11R6/kde/lib /usr/lib64"
+ test -n "$KDEDIR" && kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
+ kde_libdirs="$ac_kde_libraries $kde_libdirs"
+ 
