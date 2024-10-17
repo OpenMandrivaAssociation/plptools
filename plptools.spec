@@ -12,7 +12,7 @@ Summary: Connectivity for psion series 5
 Name: plptools
 Version: 1.0.11
 Release: 3
-URL: http://plptools.sourceforge.net/
+URL: https://plptools.sourceforge.net/
 Source: http://downloads.sourceforge.net/plptools/plptools-%{version}.tar.gz
 Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
