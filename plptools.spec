@@ -18,6 +18,11 @@ Patch0: plptools-0.17-lib64.patch
 Patch1: plptools-0.18-init_lsb.patch
 License: GPL
 Group: Communications
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 Buildrequires: readline-devel newt-devel termcap-devel
 BuildRequires: fuse-devel
 Requires: chkconfig >= 0.9
